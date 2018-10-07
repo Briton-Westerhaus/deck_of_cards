@@ -1,14 +1,21 @@
 from random import randint
+import json
 
 class deckOfCards:
     # TODO load these from a file or somewhere
     suits = ['♠', '♣', '♥', '♦']
     cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    card_string = None
 
     deck = []
 
     def __init__(self):
-        # We don't need to explicitly create a new deck, since the shuffle method does it for now
+        with open("settings.json", encoding="utf-8") as json_file: 
+            settings = json.loads(json_file.read())
+        self.suits = settings['suits']
+        self.cards = settings['cards']
+        self.card_string = settings['cardString']
+        # We don't need to explicitly create a new deck, since the shuffle method does it for
         self.shuffle()
 
     def newDeck(self):
@@ -16,16 +23,22 @@ class deckOfCards:
         temp_deck = []
         for card in self.cards:
             for suit in self.suits:
-                temp_deck.append("{} {}".format(card, suit))
+                temp_deck.append(self.card_string.format(card, suit))
         return temp_deck
 
-    def shuffle(self):
-        # TODO option to shuffle only unused cards
+    def shuffle(self, newDeck=True):
         """Randomizes the order of the deck."""
-        old_deck = self.newDeck()
+        if newDeck:
+            old_deck = self.newDeck()
+        else:
+            old_deck = self.deck[:]
         self.deck = []
         while len(old_deck) > 0:
             self.deck.append(old_deck.pop(randint(0, len(old_deck) - 1)))
+        
+    def cut(self):
+        cut_spot = randint(1, len(self.deck) - 2)
+        self.deck = self.deck[cut_spot:] + self.deck[:cut_spot]
 
     def dealOneCard(self):
         """Deals and returns one card from the top of the deck. The end of the list is considered the top."""
