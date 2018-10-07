@@ -49,23 +49,38 @@ class deckOfCards:
 if __name__ == '__main__': # Draw poker for testing
     the_deck = deckOfCards()
     hand = []
-    for i in range(0, 5): # Poker hand of 5 cards
-        hand.append(the_deck.dealOneCard())
-    print(str(hand))
-    print("Which cards would you like to keep?")
-    nums = input()
-    final_hand = []
-    for num in nums: # TODO validate that there are no duplicates and no more than 5 numbers
-        try:
-            num = int(num)
-            if (num > 5):
-                raise Exception
-            final_hand.append(hand[num - 1]) # 1 index because humans like that
-        except:
-            print("Invalid input. Quitting")
-            raise
+    keep_playing = True
+    while keep_playing:
+        for i in range(0, 5): # Poker hand of 5 cards
+            hand.append(the_deck.dealOneCard())
+        print(str(hand))
+        valid_input = False
+        while not valid_input:
+            print("Which cards would you like to keep?")
+            nums = input()
+            final_hand = []
+            for num in nums: # TODO validate that there are no duplicates and no more than 5 numbers
+                try:
+                    num = int(num)
+                    if (num > 5):
+                        raise Exception
+                    final_hand.append(hand[num - 1]) # 1 index because humans like that
+                except:
+                    print("Invalid input. Try again.")
 
-    while len(final_hand) < 5:
-        final_hand.append(the_deck.dealOneCard())
-    
-    print(final_hand)
+        while len(final_hand) < 5:
+            final_hand.append(the_deck.dealOneCard())
+        
+        print(final_hand)
+        valid_input = False
+        while not valid_input:
+            print("Would you like to play again? (y/n)")
+            play_again = input()
+            if play_again.lower() == "y":
+                valid_input = True
+                keep_playing = True
+            elif play_again.lower() == "n":
+                valid_input = True
+                keep_playing = False
+            else:
+                print("That was not a valid input.")
