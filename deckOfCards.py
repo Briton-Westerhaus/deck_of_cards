@@ -47,26 +47,37 @@ class deckOfCards:
         return self.deck.pop()
 
 if __name__ == '__main__': # Draw poker for testing
-    the_deck = deckOfCards()
-    hand = []
     keep_playing = True
     while keep_playing:
+        the_deck = deckOfCards()
+        hand = []
         for i in range(0, 5): # Poker hand of 5 cards
             hand.append(the_deck.dealOneCard())
-        print(str(hand))
         valid_input = False
         while not valid_input:
+            print(hand)
             print("Which cards would you like to keep?")
-            nums = input()
-            final_hand = []
-            for num in nums: # TODO validate that there are no duplicates and no more than 5 numbers
-                try:
-                    num = int(num)
-                    if (num > 5):
-                        raise Exception
-                    final_hand.append(hand[num - 1]) # 1 index because humans like that
-                except:
-                    print("Invalid input. Try again.")
+            try:
+                nums = input()
+                final_hand = []
+                cleaned_nums = []
+                for num in nums:
+                    try:
+                        num = int(num)
+                    except:
+                        pass # Non-numeric inputs are ignored
+                    if not num in cleaned_nums:
+                        cleaned_nums.append(num)
+                for num in cleaned_nums:
+                    try:
+                        if (num > 5):
+                            raise Exception # 
+                        final_hand.append(hand[num - 1]) # 1 index because humans like that
+                    except:
+                        print("Invalid input. Try again.")
+                valid_input = True
+            except:
+                pass
 
         while len(final_hand) < 5:
             final_hand.append(the_deck.dealOneCard())
